@@ -1,0 +1,41 @@
+# coding=utf-8
+import sqlite3
+# 连接到SQLite数据库
+# 如果文件不存在时，会自动在当前目录创建一个
+conn = sqlite3.connect('ssp.db')
+cursor = conn.cursor()
+# cursor.execute('create table ssp (SECCODE VARCHAR(40),COMNAME	VARCHAR(11),CONNATURE VARCHAR(5),CONPRO	NUMERIC(18,4),RIGPRO NUMERIC(18,4),REGIST NUMERIC(18,4),INVEST NUMERIC(18,4),INCOME NUMERIC(18,4),NETINCOME	NUMERIC(18,4),PROFESSIONAL VARCHAR(11),MERGE	NUMERIC(1,0),REASON	VARCHAR(5),BTIME DATE,ID INTEGER PRIMARY KEY AUTOINCREMENT)')
+
+flg='------------------------------------------'
+comlumName='seccode,comname,connature,conpro,rigpro,regist,invest,income,netincome,professional,merge,reason,btime'
+
+#打开文件夹向数据库写数据
+f = open('STK531_15.txt', 'r')
+str = f.read()
+row = str.split('\n')
+try:
+    for i in range(len(row)):
+        if row[i]==flg :
+            seccode=row[i+1]
+        elif len(row[i])<=6:
+            pass
+        else:
+            column=row[i].split('\t')
+            column[0]=seccode
+            if len(column)<12:
+                continue
+            content='\''+column[0]+'\''+','+'\''+column[1]+'\''+','+'\''+column[2]+'\''+','+'\''+column[3]+'\''+','+'\''+column[4]+'\''+','+'\''+column[5]+'\''+','+'\''+column[6]+'\''+','+'\''+column[7]+'\''+','+'\''+column[8]+'\''+','+'\''+column[9]+'\''+','+'\''+column[10]+'\''+','+'\''+column[11]+'\''+','+'\''+column[12]+'\''
+            print(content)
+            str='insert into ssp ('+comlumName+') values ('+content+')'
+            cursor.execute(str)
+except Exception as e:
+    print(e)
+f.close()
+
+
+# 关闭Cursor:
+cursor.close()
+# 提交事务:
+conn.commit()
+# 关闭连接
+cursor.close()
