@@ -1,0 +1,22 @@
+import sqlite3
+
+
+def dbinf_SQLLITE(SQL):
+    conn = sqlite3.connect('ssp.db')
+    cursor = conn.cursor()
+    # 执行查询语句:
+    cursor.execute(SQL)
+    # 获得查询结果
+    values = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return values
+
+
+SQL = '''
+SELECT * from STK531
+limit 6000,9000
+'''
+
+list = dbinf_SQLLITE(SQL)
+print(list[0][0])
